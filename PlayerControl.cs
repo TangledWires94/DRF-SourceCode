@@ -18,6 +18,8 @@ public class PlayerControl : MonoBehaviour
     public GameObject objectHolder;
     private Transform objectParent;
 
+    private bool cursorLocked;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,30 +27,38 @@ public class PlayerControl : MonoBehaviour
         rb = gameObject.GetComponent<Rigidbody>();
         playerCamera = GameObject.Find("Player Camera").GetComponent<Transform>();
         Cursor.lockState = CursorLockMode.Locked;
+        cursorLocked = false;
         dimensionSwapHandler = GameObject.Find("Dimension Swap Handler").GetComponent<DimensionSwap>();
     }
 
     // Update is called once per frame
     void Update()
-    {
+    {            
         //Move player
         PlayerMove();
 
         //Jumping
-        if (Input.GetButtonDown("Jump") && onFloor) 
-        { 
+        if (Input.GetButtonDown("Jump") && onFloor)
+        {
             PlayerJump();
+        }
+
+        if (toggleRotate)
+        {
+            RotatePlayer();
+        }
+
+        //Unlocking cursor so you can quit the game
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            cursorLocked = true;
         }
 
         //Debug option to allow for camera rotation to be paused whilst editing values in inspector
         if (Input.GetButtonDown("Pause"))
         {
-            ToggleRotation();
-        }
-
-        if (toggleRotate)
-        {
-            RotatePlayer();            
+           ToggleRotation();
         }
     }
 
